@@ -87,9 +87,9 @@ public:
     typedef typename response_type::ptr response_ptr;
 
     /// Type of a pointer to the Asio io_service being used
-    typedef lib::asio::io_service * io_service_ptr;
+    typedef lib::asio::io_context * io_service_ptr;
     /// Type of a pointer to the Asio io_service::strand being used
-    typedef lib::shared_ptr<lib::asio::io_service::strand> strand_ptr;
+    typedef lib::shared_ptr<lib::asio::io_context::strand> strand_ptr;
     /// Type of a pointer to the Asio timer class
     typedef lib::shared_ptr<lib::asio::steady_timer> timer_ptr;
 
@@ -465,7 +465,7 @@ protected:
         m_io_service = io_service;
 
         if (config::enable_multithreading) {
-            m_strand = lib::make_shared<lib::asio::io_service::strand>(
+            m_strand = lib::make_shared<lib::asio::io_context::strand>(
                 lib::ref(*io_service));
         }
 
