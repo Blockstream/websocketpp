@@ -559,16 +559,14 @@ public:
     {
         using lib::asio::ip::tcp;
         tcp::resolver r(*m_io_service);
-        tcp::resolver::query query(host, service);
-        tcp::resolver::iterator endpoint_iterator = r.resolve(query);
-        tcp::resolver::iterator end;
-        if (endpoint_iterator == end) {
+        auto endpoints = r.resolve(host, service);
+        if (std::begin(endpoints) == std::end(endpoints)) {
             m_elog->write(log::elevel::library,
                 "asio::listen could not resolve the supplied host or service");
             ec = make_error_code(error::invalid_host_service);
             return;
         }
-        listen(*endpoint_iterator,ec);
+        listen(*std::begin(endpoints), ec);
     }
 
     /// Set up endpoint for listening on a host and service
@@ -885,8 +883,6 @@ protected:
             port = proxy->get_port_str();
         }
 
-        tcp::resolver::query query(host,port);
-
         if (m_alog->static_test(log::alevel::devel)) {
             m_alog->write(log::alevel::devel,
                 "starting async DNS resolve for "+host+":"+port);
@@ -907,7 +903,7 @@ protected:
 
         if (config::enable_multithreading) {
             m_resolver->async_resolve(
-                query,
+                host, port,
                 tcon->get_strand()->wrap(lib::bind(
                     &type::handle_resolve,
                     this,
@@ -920,7 +916,7 @@ protected:
             );
         } else {
             m_resolver->async_resolve(
-                query,
+                host, port,
                 lib::bind(
                     &type::handle_resolve,
                     this,
@@ -989,8 +985,7 @@ protected:
             std::stringstream s;
             s << "Async DNS resolve successful. Results: ";
 
-            lib::asio::ip::tcp::resolver::iterator it, end;
-            for (it = iterator; it != end; ++it) {
+            for (auto it = results.begin(); it != results.end(); ++it) {
                 s << (*it).endpoint() << " ";
             }
 
@@ -1016,7 +1011,7 @@ protected:
         if (config::enable_multithreading) {
             lib::asio::async_connect(
                 tcon->get_raw_socket(),
-                iterator,
+                results,
                 tcon->get_strand()->wrap(lib::bind(
                     &type::handle_connect,
                     this,
@@ -1029,7 +1024,7 @@ protected:
         } else {
             lib::asio::async_connect(
                 tcon->get_raw_socket(),
-                iterator,
+                results,
                 lib::bind(
                     &type::handle_connect,
                     this,
