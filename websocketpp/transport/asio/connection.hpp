@@ -1266,19 +1266,21 @@ protected:
      * This needs to be thread safe
      */
     lib::error_code interrupt(interrupt_handler handler) {
+        auto&& fn = [&]{ handler(get_handle()); };
         if (config::enable_multithreading) {
-            m_io_service->post(m_strand->wrap(handler));
+            lib::asio::post(*m_io_service, m_strand->wrap(fn));
         } else {
-            m_io_service->post(handler);
+            lib::asio::post(*m_io_service, fn);
         }
         return lib::error_code();
     }
 
     lib::error_code dispatch(dispatch_handler handler) {
+        auto&& fn = [handler]{ handler(); };
         if (config::enable_multithreading) {
-            m_io_service->post(m_strand->wrap(handler));
+            lib::asio::post(*m_io_service, m_strand->wrap(fn));
         } else {
-            m_io_service->post(handler);
+            lib::asio::post(*m_io_service, fn);
         }
         return lib::error_code();
     }
