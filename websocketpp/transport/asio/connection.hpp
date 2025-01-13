@@ -580,8 +580,8 @@ protected:
     void handle_post_init(timer_ptr post_timer, init_handler callback,
         lib::error_code const & ec)
     {
-        if (ec == transport::error::operation_aborted ||
-            (post_timer && lib::asio::is_neg(post_timer->expires_from_now())))
+        if (ec == transport::error::operation_aborted /*||
+            (post_timer && lib::asio::is_neg(post_timer->expires_from_now()))*/)
         {
             m_alog->write(log::alevel::devel,"post_init cancelled");
             return;
@@ -684,8 +684,8 @@ protected:
         // Timer expired or the operation was aborted for some reason.
         // Whatever aborted it will be issuing the callback so we are safe to
         // return
-        if (ec == lib::asio::error::operation_aborted ||
-            lib::asio::is_neg(m_proxy_data->timer->expires_from_now()))
+        if (ec == lib::asio::error::operation_aborted /*||
+            lib::asio::is_neg(m_proxy_data->timer->expires_from_now())*/)
         {
             m_elog->write(log::elevel::devel,"write operation aborted");
             return;
@@ -821,8 +821,8 @@ protected:
         // Timer expired or the operation was aborted for some reason.
         // Whatever aborted it will be issuing the callback so we are safe to
         // return
-        if (ec == lib::asio::error::operation_aborted ||
-            lib::asio::is_neg(m_proxy_data->timer->expires_from_now()))
+        if (ec == lib::asio::error::operation_aborted /*||
+            lib::asio::is_neg(m_proxy_data->timer->expires_from_now())*/)
         {
             m_elog->write(log::elevel::devel,"write operation aborted");
             return;
@@ -912,8 +912,8 @@ protected:
         // Timer expired or the operation was aborted for some reason.
         // Whatever aborted it will be issuing the callback so we are safe to
         // return
-        if (ec == lib::asio::error::operation_aborted ||
-            lib::asio::is_neg(m_proxy_data->timer->expires_from_now()))
+        if (ec == lib::asio::error::operation_aborted /*||
+            lib::asio::is_neg(m_proxy_data->timer->expires_from_now())*/)
         {
             m_elog->write(log::elevel::devel,"read operation aborted");
             return;
@@ -1004,8 +1004,8 @@ protected:
         // Timer expired or the operation was aborted for some reason.
         // Whatever aborted it will be issuing the callback so we are safe to
         // return
-        if (ec == lib::asio::error::operation_aborted ||
-            lib::asio::is_neg(m_proxy_data->timer->expires_from_now()))
+        if (ec == lib::asio::error::operation_aborted /*||
+            lib::asio::is_neg(m_proxy_data->timer->expires_from_now())*/)
         {
             m_elog->write(log::elevel::devel,"read operation aborted");
             return;
@@ -1349,8 +1349,8 @@ protected:
     void handle_async_shutdown(timer_ptr shutdown_timer, shutdown_handler
         callback, lib::asio::error_code const & ec)
     {
-        if (ec == lib::asio::error::operation_aborted ||
-            lib::asio::is_neg(shutdown_timer->expires_from_now()))
+        if (ec == lib::asio::error::operation_aborted /*||
+            lib::asio::is_neg(shutdown_timer->expires_from_now())*/)
         {
             m_alog->write(log::alevel::devel,"async_shutdown cancelled");
             return;

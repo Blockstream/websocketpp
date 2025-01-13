@@ -964,10 +964,10 @@ protected:
 
     void handle_resolve(transport_con_ptr tcon, timer_ptr dns_timer,
         connect_handler callback, lib::asio::error_code const & ec,
-        lib::asio::ip::tcp::resolver::iterator iterator)
+        lib::asio::ip::tcp::resolver::results_type results)
     {
-        if (ec == lib::asio::error::operation_aborted ||
-            lib::asio::is_neg(dns_timer->expires_from_now()))
+        if (ec == lib::asio::error::operation_aborted /*||
+            lib::asio::is_neg(dns_timer->expires_from_now())*/)
         {
             m_alog->write(log::alevel::devel,"async_resolve cancelled");
             return;
@@ -1073,8 +1073,8 @@ protected:
     void handle_connect(transport_con_ptr tcon, timer_ptr con_timer,
         connect_handler callback, lib::asio::error_code const & ec)
     {
-        if (ec == lib::asio::error::operation_aborted ||
-            lib::asio::is_neg(con_timer->expires_from_now()))
+        if (ec == lib::asio::error::operation_aborted /*||
+            lib::asio::is_neg(con_timer->expires_from_now())*/)
         {
             m_alog->write(log::alevel::devel,"async_connect cancelled");
             return;
