@@ -86,8 +86,8 @@ public:
     /// Type of timer handle
     typedef lib::shared_ptr<lib::asio::steady_timer> timer_ptr;
     /// Type of a shared pointer to an io_service work object
-    typedef lib::shared_ptr<lib::asio::io_context::work> work_ptr;
-
+    typedef lib::asio::executor_work_guard<lib::asio::io_context::executor_type> work_guard_type;
+    typedef lib::shared_ptr<work_guard_type> work_ptr;
     /// Type of socket pre-bind handler
     typedef lib::function<lib::error_code(acceptor_ptr)> tcp_pre_bind_handler;
 
@@ -688,7 +688,7 @@ public:
      * @since 0.3.0
      */
     void start_perpetual() {
-        m_work = lib::make_shared<lib::asio::io_context::work>(
+        m_work = lib::make_shared<work_guard_type>(
             lib::ref(*m_io_service)
         );
     }
