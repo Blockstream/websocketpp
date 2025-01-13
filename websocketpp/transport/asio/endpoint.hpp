@@ -665,7 +665,7 @@ public:
 
     /// wraps the reset method of the internal io_service object
     void reset() {
-        m_io_service->reset();
+        m_io_service->restart();
     }
 
     /// wraps the stopped method of the internal io_service object
